@@ -13,7 +13,7 @@ const app = express();
 
 app.use(express.json());
 
-// تقديم ملفات public
+// ملفات الموقع داخل public
 app.use(express.static(path.join(__dirname, "public")));
 
 // الصفحة الرئيسية
@@ -24,8 +24,6 @@ app.get("/", (req, res) => {
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
-console.log("API موجود:", !!process.env.OPENAI_API_KEY);
 
 app.post("/chat", async (req, res) => {
   try {
@@ -39,7 +37,6 @@ app.post("/chat", async (req, res) => {
     res.json({
       reply: response.output_text,
     });
-
   } catch (error) {
     console.error(error);
 
@@ -49,8 +46,14 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+// مهم لـ Vercel
+export default app;
 
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+// للتشغيل محلياً فقط
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 3000;
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
