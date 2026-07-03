@@ -12,11 +12,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 app.use(express.json());
-app.use(express.static(__dirname));
+
+// تقديم ملفات public
+app.use(express.static(path.join(__dirname, "public")));
 
 // الصفحة الرئيسية
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 const client = new OpenAI({
@@ -37,6 +39,7 @@ app.post("/chat", async (req, res) => {
     res.json({
       reply: response.output_text,
     });
+
   } catch (error) {
     console.error(error);
 
@@ -49,5 +52,5 @@ app.post("/chat", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
